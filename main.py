@@ -16,7 +16,7 @@ def make_product():
     print(f"Order {name} with {stock} stock added!")
 
 def make_order():
-    cusomer_id = int(input("Enter customer ID "))
+    cusomer_id = int(input("Enter customer ID: "))
     product_quantities = {}
 
     while True:
@@ -24,7 +24,7 @@ def make_order():
         if product_name == "done":
             break
         quantity = int(input("Enter quantity for {product_name}: "))
-        product_quantities={product_name} = quantity
+        product_quantities[product_name] = quantity
 
     try:
         create_order(cusomer_id,product_quantities)
@@ -46,7 +46,7 @@ def main():
         print("8. Delete a Customer")
         print("9. Exit")
 
-        option = input("Select a option(1-9) from the above: ")
+        option = int(input("Select a option(1-9) from the above: "))
 
         if option == 1:
             make_customer()
@@ -55,16 +55,25 @@ def main():
         elif option == 3:
             make_order()
         elif option == 4:
-            pass
+            print("Customers: ",get_customers())
         elif option == 5:
-            pass
+            print("Products: ",get_products())
         elif option == 6:
-            pass
+            print("Orders: ",get_orders())
         elif option == 7:
-            pass
+            product_id = int(input("Product id: "))
+            price = float(input("New Price: "))
+            update_product_price(product_id, price)
+            get_orders()
         elif option == 8:
-            pass
+            customer_id = int(input("Customer ID: "))
+            del_customer(customer_id)
+            get_customers()
         elif option == 9:
-            pass
+            print("Existing...")
+            break
         else:
             print("Invalid input!")
+
+if __name__ == "__main__":
+    main()

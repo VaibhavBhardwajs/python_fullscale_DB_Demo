@@ -20,26 +20,39 @@ def create_product(name:str, price:float, stock:int) -> None:
     session.commit()
     session.close()
 
-def create_order(customer_id:int, product_quantities:dict[str:int]) -> None:
+def create_order(customer_id: int, product_quantities: dict[str, int]) -> None:
     session = get_session()
-    products = {product.name: product for product in session.query(Product).all()}
 
+    # Fetch all products and store them in a dictionary with lowercase names as keys
+    products = {product.name.lower(): product for product in session.query(Product).all()}
+    
     # Create order
-    order = Order(customer_id=customer_id)
+    order = Order(customer_id=customer_id, total_amount=0)  # Initialize total_amount as 0
     session.add(order)
     session.commit()
 
-    # Making orders based on product names
-    for product_name,quantity in product_quantities.items():
-        if product_name in products:
-            product = products[product_name]
+    total_amount = 0
+    
+    # Process the order items based on product names
+    for product_name, quantity in product_quantities.items():
+        product_name_lower = product_name.lower()  # Convert the entered product name to lowercase
+        if product_name_lower in products:
+            product = products[product_name_lower]
             order_item = OrderItem(order_id=order.id, product_id=product.id, quantity=quantity)
             session.add(order_item)
+
+            # Update total amount
+            total_amount += product.price * quantity
         else:
             print(f"Product '{product_name}' not found!")
-            
+    
+    # Update the order with the calculated total amount
+    order.total_amount = total_amount
     session.commit()
+
     session.close()
+    print(f"Order created for Customer ID: {customer_id} with total amount: {total_amount}")
+
 
 # Read Operations(Customer, Products, Orders)
 def get_customers():

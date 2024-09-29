@@ -16,7 +16,7 @@ class Customer(Base):
     name = Column(String)
     email = Column(String)
 
-    orders = relationship('Order', back_populations='customer')
+    orders = relationship('Order', back_populates='customer')
 
     def __repr__(self):
         return f"<Customer(id={self.id}, name={self.name}, email={self.email})>"
@@ -30,7 +30,7 @@ class Product(Base):
     price = Column(Float)
     stock = Column(Integer)
 
-    order_items = relationship('OrderItem',back_populations='prouduct')
+    order_items = relationship('OrderItem',back_populates='product')
 
     def __repr__(self):
         return f"<Product(id={self.id}, name={self.name}, price={self.price}, stock={self.stock})>"
@@ -44,13 +44,13 @@ class Order(Base):
     total_amount = Column(Float)
 
     # Relationship
-    customer = relationship('Customer',back_populations='orders')
-    order_items = relationship('OrderItem',back_populations='order')
+    customer = relationship('Customer',back_populates='orders')
+    order_items = relationship('OrderItem',back_populates='order')
 
     def __repr__(self):
         return f"<Order(id={self.id}, customer_id={self.customer_id}, total_amount={self.total_amount})>"
     
-    # Order Item Model
+   # OrderItem Model
 class OrderItem(Base):
     __tablename__ = 'order_items'
 
@@ -59,10 +59,9 @@ class OrderItem(Base):
     product_id = Column(Integer, ForeignKey('products.id'))
     quantity = Column(Integer)
 
-    # Relationship
-    order = relationship('Order',back_populations='order_items')
-    product = relationship('Product',back_populations='order_items')
+    # Relationship to Order and Product
+    order = relationship('Order', back_populates='order_items')
+    product = relationship('Product', back_populates='order_items')
 
     def __repr__(self):
         return f"<OrderItem(id={self.id}, order_id={self.order_id}, product_id={self.product_id}, quantity={self.quantity})>"
-    
